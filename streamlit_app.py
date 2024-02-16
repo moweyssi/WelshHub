@@ -38,7 +38,7 @@ df = pd.read_csv('embedding.csv')
 df['ada_embedding'] = df.ada_embedding.apply(eval).apply(np.array)
 embedding_matrix = np.array(df['ada_embedding'].to_numpy().tolist())
 
-st.title("Welsh AI assistant")
+st.title("Welsh AI assistanadadsdsadt")
 
 client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
