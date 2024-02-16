@@ -78,6 +78,5 @@ if prompt := st.chat_input("How can I help?"):
             pageno+=1
         else:
             # If no ERROR999 encountered, return the response
-            st.chat_message("assistant").write(pageno)
             st.chat_message("assistant").write(response_text)
             break
