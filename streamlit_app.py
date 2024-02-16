@@ -28,7 +28,7 @@ def find_closest_matches(similarities, paragraphs,page_numbers, document_names):
 
 def GPTprompt(pageno):
     text1 = "Please could you answer my question based on the text from '" + sorted_document_names[pageno][0:-4] + "' on " + sorted_page_numbers[pageno] + "?\n"
-    text2 = "Answer my questions based on the text, but phrase your answers as your own and refer to the document as if I haven't provided it to you.\n"
+    text2 = "Answer my questions based on the text. Start your response directly by giving information, no source. Only quote the source at the end of each response and nowhere else.\n"
     text3 = "If this text does not have enough information to answer in a full and unbiased way it is bad. This would happen for example if it comes from a page with not enough text where many images could have been. \nIn this case, only reply 'ERROR999' to me and nothing else. I will give you another page and we try again.\n"
     text4 = "\nMy question is:\n\n" + prompt + "\n\n"
     text5 = "Text is here:\n\n" + sorted_paragraphs[pageno]
