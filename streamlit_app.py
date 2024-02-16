@@ -63,8 +63,7 @@ if prompt := st.chat_input("How can I help?"):
                                                                                                                                    df['Page'],
                                                                                                                                    df['Document']
                                                                                                                                    )
-        while True:
-            pageno = 0
+        for pageno in range(0,5):
             response = client.chat.completions.create(
                     model="gpt-3.5-turbo-0125",
                     messages=[
@@ -73,16 +72,13 @@ if prompt := st.chat_input("How can I help?"):
                     ]
                 )
             response_text = response.choices[0].message.content
-            if response_text=="ERROR999":
-                # Increment page number and update the prompt
-                #st.chat_message("assistant").write(response_text)
-                pageno+=1
-                if pageno==4:
-                    st.chat_message("assistant").write("Sorry I don't know what you mean")
-                    break
-
-
-            else:
+            
+            if response_text!="ERROR999":
                 # If no ERROR999 encountered, return the response
                 st.chat_message("assistant").write(response_text)
                 break
+
+            elif pageno==4:
+                st.chat_message("assistant").write("Sorry I don't know what you mean")
+                break
+
