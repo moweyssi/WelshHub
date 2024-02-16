@@ -76,7 +76,7 @@ if prompt := st.chat_input("How can I help?"):
             if response_text!="ERROR999":
                 # If no ERROR999 encountered, return the response
                 st.chat_message("assistant").write(response_text)
-                st.text_area(sorted_paragraphs[pageno])
+                st.code(sorted_paragraphs[pageno])
                 break
 
             elif pageno==4:
