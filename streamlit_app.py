@@ -73,11 +73,11 @@ if prompt := st.chat_input("How can I help?"):
         response_text = response.choices[0].message.content
         if response_text=='ERROR999':
             # Increment page number and update the prompt
-            st.write("ERROR")
-            st.write(response_text)
+            st.chat_message("assistant").write("ERROR")
+            st.chat_message("assistant").write(response_text)
             pageno+=1
         else:
             # If no ERROR999 encountered, return the response
-            st.write(pageno)
-            st.write(response_text)
+            st.chat_message("assistant").write(pageno)
+            st.chat_message("assistant").write(response_text)
             break
