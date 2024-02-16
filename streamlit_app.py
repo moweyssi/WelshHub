@@ -4,6 +4,7 @@ import pandas as pd
 from openai import OpenAI
 import openai
 import pandas as pd
+from streamlit_modal import Modal
 import streamlit as st
 client = OpenAI()
 
@@ -76,7 +77,10 @@ if prompt := st.chat_input("How can I help?"):
             if response_text!="ERROR999":
                 # If no ERROR999 encountered, return the response
                 st.chat_message("assistant").write(response_text)
-                st.code(sorted_paragraphs[pageno])
+                open_modal = st.button(label='Source')
+                if open_modal:
+                    with Modal():
+                        st.write(sorted_paragraphs[pageno])
                 break
 
             elif pageno==4:
