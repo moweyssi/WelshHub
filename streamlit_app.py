@@ -38,7 +38,7 @@ df = pd.read_csv('embedding.csv')
 df['ada_embedding'] = df.ada_embedding.apply(eval).apply(np.array)
 embedding_matrix = np.array(df['ada_embedding'].to_numpy().tolist())
 
-st.title("Welsh AI assistanadadsdsadt")
+st.title("Welsh AI assistant")
 
 client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
@@ -65,6 +65,7 @@ if prompt := st.chat_input("How can I help?"):
                                                                                                                                    )
         while True:
             pageno = 0
+            st.chat_message("assistant").write(pageno)
             response = client.chat.completions.create(
                     model="gpt-3.5-turbo-0125",
                     messages=[
