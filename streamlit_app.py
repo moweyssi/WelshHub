@@ -5,56 +5,7 @@ from openai import OpenAI
 import openai
 import pandas as pd
 import streamlit as st
-
-st.title("Welsh AI assistant")
-
-client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
-
-if "openai_model" not in st.session_state:
-    st.session_state["openai_model"] = "gpt-3.5-turbo"
-
-if "messages" not in st.session_state:
-    st.session_state.messages = []
-
-for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
-
-if prompt := st.chat_input("How can I help?"):
-    st.session_state.messages.append({"role": "user", "content": prompt})
-    with st.chat_message("user"):
-        st.markdown(prompt)
-
-    with st.chat_message("assistant"):
-        stream = client.chat.completions.create(
-            model=st.session_state["openai_model"],
-            messages=[
-                {"role": m["role"], "content": m["content"]}
-                for m in st.session_state.messages
-            ],
-            stream=True,
-        )
-        response = st.write_stream(stream)
-
-    st.session_state.messages.append({"role": "assistant", "content": response})
-
-
-
-
-
-
-
-
-
-
-
-"""
-
-
 client = OpenAI()
-
-prompt = "How can I increase energy efficiency of my home?"
-
 
 def get_embedding(text, model="text-embedding-3-small"):
    text = text.replace("\n", " ")
@@ -83,40 +34,50 @@ def GPTprompt(pageno):
     text5 = "Text is here:\n\n" + sorted_paragraphs[pageno]
     return(text1+text2+text3+text4+text5)
 
-
 df = pd.read_csv('embedding.csv')
 df['ada_embedding'] = df.ada_embedding.apply(eval).apply(np.array)
-
-
-embedded_prompt = np.array(get_embedding(prompt)).reshape(1, -1)
 embedding_matrix = np.array(df['ada_embedding'].to_numpy().tolist())
 
-similarities = cosine_similarity(embedded_prompt, embedding_matrix).flatten()
-sorted_paragraphs, sorted_page_numbers, sorted_document_names, sorting_indices, sorted_similarities = find_closest_matches(similarities,
-                                                                                                                           df['Text'],
-                                                                                                                           df['Page'],
-                                                                                                                           df['Document']
-                                                                                                                           )
+st.title("Welsh AI assistant")
 
-while True:
-    pageno = 0
-    response = client.chat.completions.create(
-            model="gpt-3.5-turbo-0125",
-            messages=[
-                {"role": "system", "content": "You are a helpful assistant, working for the Welsh government providing people with information on saving energy."},
-                {"role": "user", "content": GPTprompt(pageno)}
-            ]
-        )
-    response_text = response.choices[0].message.content
-    if response_text=='ERROR999':
-        # Increment page number and update the prompt
-        print("ERROR")
-        print(response_text)
-        pageno+=1
-    else:
-        # If no ERROR999 encountered, return the response
-        print(pageno)
-        print(response_text)
-        break
-        
-        """
+client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+
+if "openai_model" not in st.session_state:
+    st.session_state["openai_model"] = "gpt-3.5-turbo"
+
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
+
+
+if prompt := st.chat_input("How can I help?"):
+    embedded_prompt = np.array(get_embedding(prompt)).reshape(1, -1)
+    similarities = cosine_similarity(embedded_prompt, embedding_matrix).flatten()
+    sorted_paragraphs, sorted_page_numbers, sorted_document_names, sorting_indices, sorted_similarities = find_closest_matches(similarities,
+                                                                                                                               df['Text'],
+                                                                                                                               df['Page'],
+                                                                                                                               df['Document']
+                                                                                                                               )
+    while True:
+        pageno = 0
+        response = client.chat.completions.create(
+                model="gpt-3.5-turbo-0125",
+                messages=[
+                    {"role": "system", "content": "You are a helpful assistant, working for the Welsh government providing people with information on saving energy."},
+                    {"role": "user", "content": GPTprompt(pageno)}
+                ]
+            )
+        response_text = response.choices[0].message.content
+        if response_text=='ERROR999':
+            # Increment page number and update the prompt
+            st.write("ERROR")
+            st.write(response_text)
+            pageno+=1
+        else:
+            # If no ERROR999 encountered, return the response
+            st.write(pageno)
+            st.write(response_text)
+            break
