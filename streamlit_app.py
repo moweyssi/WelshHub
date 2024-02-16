@@ -55,29 +55,30 @@ for message in st.session_state.messages:
 
 if prompt := st.chat_input("How can I help?"):
     st.chat_message("user").write(prompt)
-    embedded_prompt = np.array(get_embedding(prompt)).reshape(1, -1)
-    similarities = cosine_similarity(embedded_prompt, embedding_matrix).flatten()
-    sorted_paragraphs, sorted_page_numbers, sorted_document_names, sorting_indices, sorted_similarities = find_closest_matches(similarities,
-                                                                                                                               df['Text'],
-                                                                                                                               df['Page'],
-                                                                                                                               df['Document']
-                                                                                                                               )
-    while True:
-        pageno = 0
-        response = client.chat.completions.create(
-                model="gpt-3.5-turbo-0125",
-                messages=[
-                    {"role": "system", "content": "You are a helpful assistant, working for the Welsh government providing people with information on saving energy."},
-                    {"role": "user", "content": GPTprompt(pageno)}
-                ]
-            )
-        response_text = response.choices[0].message.content
-        if response_text=='ERROR999':
-            # Increment page number and update the prompt
-            st.chat_message("assistant").write("ERROR")
-            st.chat_message("assistant").write(response_text)
-            pageno+=1
-        else:
-            # If no ERROR999 encountered, return the response
-            st.chat_message("assistant").write(response_text)
-            break
+    with st.spinner('Wait for it...'):
+        embedded_prompt = np.array(get_embedding(prompt)).reshape(1, -1)
+        similarities = cosine_similarity(embedded_prompt, embedding_matrix).flatten()
+        sorted_paragraphs, sorted_page_numbers, sorted_document_names, sorting_indices, sorted_similarities = find_closest_matches(similarities,
+                                                                                                                                   df['Text'],
+                                                                                                                                   df['Page'],
+                                                                                                                                   df['Document']
+                                                                                                                                   )
+        while True:
+            pageno = 0
+            response = client.chat.completions.create(
+                    model="gpt-3.5-turbo-0125",
+                    messages=[
+                        {"role": "system", "content": "You are a helpful assistant, working for the Welsh government providing people with information on saving energy."},
+                        {"role": "user", "content": GPTprompt(pageno)}
+                    ]
+                )
+            response_text = response.choices[0].message.content
+            if response_text=='ERROR999':
+                # Increment page number and update the prompt
+                st.chat_message("assistant").write("ERROR")
+                st.chat_message("assistant").write(response_text)
+                pageno+=1
+            else:
+                # If no ERROR999 encountered, return the response
+                st.chat_message("assistant").write(response_text)
+                break
