@@ -77,7 +77,10 @@ if prompt := st.chat_input("How can I help?"):
                 # Increment page number and update the prompt
                 #st.chat_message("assistant").write(response_text)
                 pageno+=1
-                st.chat_message("assistant").write("Sorry I don't know what you mean")
+                if pageno==4:
+                    st.chat_message("assistant").write("Sorry I don't know what you mean")
+                    break
+
 
             else:
                 # If no ERROR999 encountered, return the response
