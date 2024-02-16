@@ -54,6 +54,7 @@ for message in st.session_state.messages:
 
 
 if prompt := st.chat_input("How can I help?"):
+    st.chat_message("user").write(prompt)
     embedded_prompt = np.array(get_embedding(prompt)).reshape(1, -1)
     similarities = cosine_similarity(embedded_prompt, embedding_matrix).flatten()
     sorted_paragraphs, sorted_page_numbers, sorted_document_names, sorting_indices, sorted_similarities = find_closest_matches(similarities,
