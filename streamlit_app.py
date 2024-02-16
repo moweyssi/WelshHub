@@ -4,7 +4,6 @@ import pandas as pd
 from openai import OpenAI
 import openai
 import pandas as pd
-from streamlit_modal import Modal
 import streamlit as st
 client = OpenAI()
 

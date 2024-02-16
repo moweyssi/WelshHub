@@ -2,4 +2,3 @@ scikit-learn
 numpy
 pandas
 openai
-streamlit_modal
