@@ -54,6 +54,9 @@ for message in st.session_state.messages:
 
 
 if prompt := st.chat_input("How can I help?"):
+    # Create chat history with system and user messages
+    chat_history = [
+        {"role": "system", "content": "You are a helpful assistant, working for the Welsh government providing people with information on saving energy."}]
     st.chat_message("user").write(prompt)
     with st.spinner('Wait for it...'):
         embedded_prompt = np.array(get_embedding(prompt)).reshape(1, -1)
@@ -64,18 +67,20 @@ if prompt := st.chat_input("How can I help?"):
                                                                                                                                    df['Document']
                                                                                                                                    )
         for pageno in range(0,5):
+            # Create chat history for each iteration and accumulate it
+            chat_history_iteration = [{"role": "user", "content": GPTprompt(pageno)}]
+            
             response = client.chat.completions.create(
                     model="gpt-3.5-turbo-0125",
-                    messages=[
-                        {"role": "system", "content": "You are a helpful assistant, working for the Welsh government providing people with information on saving energy."},
-                        {"role": "user", "content": GPTprompt(pageno)}
-                    ]
+                    messages= chat_history + chat_history_iteration
                 )
             response_text = response.choices[0].message.content
             
             if response_text!="ERROR999":
                 # If no ERROR999 encountered, return the response
                 st.chat_message("assistant").write(response_text)
+                chat_history.append({"role": "user", "content": GPTprompt(pageno)})
+                chat_history.append({"role": "assistant", "content": response_text})
                 with st.expander('Source'):
                     st.write(sorted_paragraphs[pageno])
                 break
