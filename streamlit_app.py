@@ -88,4 +88,4 @@ if prompt := st.chat_input("How can I help?"):
             elif pageno==4:
                 st.chat_message("assistant").write("Sorry I don't know what you mean")
                 break
-    st.session_state.messages.extend(chat_history)
+    st.session_state.messages.extend(chat_history[1:])
