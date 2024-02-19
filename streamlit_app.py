@@ -79,7 +79,7 @@ if prompt := st.chat_input("How can I help?"):
             if response_text!="ERROR999":
                 # If no ERROR999 encountered, return the response
                 st.chat_message("assistant").write(response_text)
-                chat_history.append({"role": "user", "content": GPTprompt(pageno)})
+                chat_history.append({"role": "user", "content": prompt})
                 chat_history.append({"role": "assistant", "content": response_text})
                 with st.expander('Source'):
                     st.write(sorted_paragraphs[pageno])
