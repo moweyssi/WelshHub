@@ -86,6 +86,6 @@ if prompt := st.chat_input("How can I help?"):
                 break
 
             elif pageno==4:
-                st.chat_message("assistant").write("Sorry I don't know what you mean")
+                st.chat_message("assistant").write("Sorry I don't know what you mean, I only answer questions regarding energy sustainability.")
                 break
-    st.session_state.messages.extend(chat_history[1:])
+    st.session_state.messages.extend(chat_history[1:]) #Everything but first system message
